@@ -3,7 +3,7 @@ class ListDigestsController < ApplicationController
   respond_to :json
 
   def create
-    @list_digest = ListDigest.new(params[:Subject], params[:TextBody])
+    @list_digest = ListDigest.new(params[:From], params[:Subject], params[:TextBody])
 
     if @list_digest.submit_to_reddit(ENV['REDDIT_USERNAME'],
                                     ENV['REDDIT_PASSWORD'],
