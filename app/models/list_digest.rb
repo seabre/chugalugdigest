@@ -12,7 +12,7 @@ class ListDigest
     reddit = Snoo::Client.new
     reddit.log_in username, password
 
-    reddit.submit @title, subreddit, text: to_markdown(@digest_text)
+    reddit.submit @title, subreddit, text: @digest_text
   end
 
   private
