@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 ruby '2.0.0'
 gem 'rails', '4.0.0'
-gem 'sqlite3'
 gem 'sass-rails', '~> 4.0.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'
@@ -12,6 +11,10 @@ gem 'bootstrap-sass', '~> 2.3.2.2'
 gem 'figaro'
 gem 'haml-rails'
 gem 'simple_form', '>= 3.0.0.rc'
+gem 'html2markdown'
+gem 'snoo'
+gem 'passenger', '>= 4.0.18'
+
 group :assets do
   gem 'therubyracer', :platform=>:ruby
 end
@@ -29,10 +32,20 @@ group :development do
   gem 'rb-inotify', :require=>false
 end
 group :development, :test do
+  # We're not even persisting data (yet), leave it here until I decide
+  # to start saving stuff
+  gem 'sqlite3'
+
   gem 'factory_girl_rails'
   gem 'rspec-rails'
 end
 group :test do
   gem 'database_cleaner', '1.0.1'
   gem 'email_spec'
+end
+
+group :production do
+  # We're not even persisting data (yet), leave it here until I decide
+  # to start saving stuff
+  gem "pg"
 end

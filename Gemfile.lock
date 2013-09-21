@@ -44,6 +44,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
+    daemon_controller (1.1.5)
     database_cleaner (1.0.1)
     debug_inspector (0.0.2)
     diff-lcs (1.2.4)
@@ -86,6 +87,11 @@ GEM
       haml (>= 4.0.0.rc.1)
       hpricot (~> 0.8.6)
       ruby_parser (~> 3.1.1)
+    html2markdown (0.0.3)
+      nokogiri
+    httparty (0.11.0)
+      multi_json (~> 1.0)
+      multi_xml (>= 0.5.2)
     i18n (0.6.5)
     jbuilder (1.5.1)
       activesupport (>= 3.0.0)
@@ -104,8 +110,17 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.25)
+    mini_portile (0.5.1)
     minitest (4.7.5)
     multi_json (1.8.0)
+    multi_xml (0.5.5)
+    nokogiri (1.6.0)
+      mini_portile (~> 0.5.0)
+    passenger (4.0.18)
+      daemon_controller (>= 1.1.0)
+      rack
+      rake (>= 0.8.1)
+    pg (0.17.0)
     polyglot (0.3.3)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
@@ -161,6 +176,9 @@ GEM
     simple_form (3.0.0.rc)
       actionpack (>= 4.0.0.rc1, < 4.1)
       activemodel (>= 4.0.0.rc1, < 4.1)
+    snoo (0.1.2)
+      httparty
+      nokogiri
     sprockets (2.10.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -205,8 +223,11 @@ DEPENDENCIES
   guard-rspec
   haml-rails
   html2haml
+  html2markdown
   jbuilder (~> 1.2)
   jquery-rails
+  passenger (>= 4.0.18)
+  pg
   quiet_assets
   rails (= 4.0.0)
   rails_layout
@@ -216,6 +237,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (~> 4.0.0)
   simple_form (>= 3.0.0.rc)
+  snoo
   sqlite3
   therubyracer
   turbolinks
