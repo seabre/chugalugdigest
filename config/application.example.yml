@@ -2,3 +2,4 @@
 REDDIT_USERNAME: myuser
 REDDIT_PASSWORD: mypass
 REDDIT_SUBREDDIT: mysubreddit
+LISTDIGEST_WHITELIST: "test@example.org,test@example.com" 
