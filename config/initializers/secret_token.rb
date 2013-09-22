@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Chugalugdigest::Application.config.secret_key_base = '70f2ac9633780d1b31d546f13783acfb5212b0743ff24e91c97031534e21b7e7269be78345199f1ecaa21c36792371791f89d160850960cfb43c2078baa254cb'
+Chugalugdigest::Application.config.secret_key_base = ENV['SECRET_TOKEN'] || '70f2ac9633780d1b31d546f13783acfb5212b0743ff24e91c97031534e21b7e7269be78345199f1ecaa21c36792371791f89d160850960cfb43c2078baa254cb'

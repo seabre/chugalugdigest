@@ -11,13 +11,14 @@ This came about because members of [Chugalug](http://www.chugalug.org/) that als
 
 The app is looking for the following environment variables
 
-| Environment Variable   | Description                                                                               |
-| -----------------------| ----------------------------------------------------------------------------------------- |
-| `REDDIT_USERNAME`      | A string containing the reddit username of the bot you want to use.                       |
-| `REDDIT_PASSWORD`      | A string containing the password for the reddit username of the bot you want to use.      |
-| `REDDIT_SUBREDDIT`     | A string containing the subreddit where you want to post to.                              |
-| `LISTDIGEST_WHITELIST` | A string of comma separated e-mail addresses that are allowed to send to the app.         |
-| `IP_WHITELIST`         | A string of comma separated IP addresses that are allowed to POST e-mail data to the app. |
+| Environment Variable   | Description                                                                                                           |
+| -----------------------| --------------------------------------------------------------------------------------------------------------------- |
+| `REDDIT_USERNAME`      | A string containing the reddit username of the bot you want to use.                                                   |
+| `REDDIT_PASSWORD`      | A string containing the password for the reddit username of the bot you want to use.                                  |
+| `REDDIT_SUBREDDIT`     | A string containing the subreddit where you want to post to.                                                          |
+| `LISTDIGEST_WHITELIST` | A string of comma separated e-mail addresses that are allowed to send to the app.                                     |
+| `IP_WHITELIST`         | A string of comma separated IP addresses that are allowed to POST e-mail data to the app.                             |
+| `SECRET_TOKEN`         | A string of random letters and numbers. Minimum of 30 characters. Used for verifying the integrity of signed cookies. |
 
 You can either use `config/application.yml` to store your environment variables for development or a `.env.development`
 The test environment currently uses `.env.test`. I am probably moving to using strictly [dotenv](https://github.com/bkeepers/dotenv) for working with environment variables, so for now, whichever method you decide to use is up to you.
