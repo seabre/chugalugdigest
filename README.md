@@ -3,7 +3,7 @@
 
 ## About
 
-This came about because members of [Chugalug] that also subscribed to the [subreddit](http://www.reddit.com/r/chugalug) wanted daily digests sent to the subreddit.
+This came about because members of [Chugalug](http://www.chugalug.org/) that also subscribed to the [subreddit](http://www.reddit.com/r/chugalug) wanted daily digests sent to the subreddit.
 
 ##Configuration
 
