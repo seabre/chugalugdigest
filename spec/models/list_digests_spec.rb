@@ -47,19 +47,13 @@ describe ListDigest do
     end
   end
 
-  describe "#in_whitelist" do
+  describe "#validate_sender" do
     it "returns true if e-mail is in whitelist" do
-      expect(@list_digest.send(:in_whitelist, "test@example.com")).to be_true
+      expect(@list_digest.send(:validate_sender, "test@example.com")).to be_true
     end
 
     it "returns false if e-mail is not in whitelist" do
-      expect(@list_digest.send(:in_whitelist, "derp@derpy.net")).to be_false
-    end
-  end
-
-  describe "#to_markdown" do
-    it "converts given HTML to markdown" do
-      expect(@list_digest.send(:to_markdown, "<strong>Test</strong>")).to eq "**Test**"
+      expect(@list_digest.send(:validate_sender, "derp@derpy.net")).to be_false
     end
   end
 
@@ -67,6 +61,12 @@ describe ListDigest do
     it "does not submit if e-mail is not in the whitelist" do
       list_digest = ListDigest.new "derp@derpy.com", "Some Title", "A bunch of text"
       expect(list_digest.submit_to_reddit("fakeusername9235","fakepass1234","fakesub123123")).to be_false
+    end
+  end
+
+  describe "#to_inline" do
+    it "adds four spaces after newlines and carriage returns" do
+      expect(@list_digest.send(:to_inline, "\r\nsomething     \r\n  something")).to eq "    \r\n    something     \r\n      something"
     end
   end
 

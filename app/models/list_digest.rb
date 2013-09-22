@@ -11,11 +11,11 @@ class ListDigest
   end
 
   def submit_to_reddit(username, password, subreddit)
-    if in_whitelist(@from)
+    if validate_sender(@from)
       reddit = Snoo::Client.new
       reddit.log_in username, password
 
-      reddit.submit @title, subreddit, text: @digest_text
+      reddit.submit @title, subreddit, text: to_inline(@digest_text)
     else
       false
     end
@@ -23,13 +23,12 @@ class ListDigest
 
   private
 
-  def in_whitelist(from)
+  def validate_sender(from)
     "#{ENV['LISTDIGEST_WHITELIST']}".strip.split(',').include?(from)
   end
 
-  def to_markdown(txt)
-    html = HTMLPage.new contents: txt
-    html.markdown
+  def to_inline(txt)
+    "    #{txt.gsub(/\r\n/, "\r\n    ")}"
   end
 
 end
