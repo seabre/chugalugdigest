@@ -11,9 +11,7 @@ gem 'bootstrap-sass', '~> 2.3.2.2'
 gem 'figaro'
 gem 'haml-rails'
 gem 'simple_form', '>= 3.0.0.rc'
-gem 'html2markdown'
 gem 'snoo'
-gem 'passenger', '>= 4.0.18'
 
 group :assets do
   gem 'therubyracer', :platform=>:ruby
@@ -49,4 +47,5 @@ group :production do
   # We're not even persisting data (yet), leave it here until I decide
   # to start saving stuff
   gem "pg"
+  gem 'passenger', '>= 4.0.18'
 end

@@ -90,8 +90,6 @@ GEM
       haml (>= 4.0.0.rc.1)
       hpricot (~> 0.8.6)
       ruby_parser (~> 3.1.1)
-    html2markdown (0.0.3)
-      nokogiri
     httparty (0.11.0)
       multi_json (~> 1.0)
       multi_xml (>= 0.5.2)
@@ -227,7 +225,6 @@ DEPENDENCIES
   guard-rspec
   haml-rails
   html2haml
-  html2markdown
   jbuilder (~> 1.2)
   jquery-rails
   passenger (>= 4.0.18)
