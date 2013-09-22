@@ -28,7 +28,7 @@ class ListDigest
   end
 
   def to_inline(txt)
-    "    #{txt.gsub(/\r\n/, "\r\n    ")}"
+    "    #{txt.gsub(/\n/, "\n    ")}"
   end
 
 end

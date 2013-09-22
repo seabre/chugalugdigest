@@ -65,8 +65,12 @@ describe ListDigest do
   end
 
   describe "#to_inline" do
-    it "adds four spaces after newlines and carriage returns" do
+    it "adds four spaces after newlines" do
       expect(@list_digest.send(:to_inline, "\r\nsomething     \r\n  something")).to eq "    \r\n    something     \r\n      something"
+    end
+
+    it "adds four spaces to the beginning of a string" do
+      expect(@list_digest.send(:to_inline, "something")).to eq "    something"
     end
   end
 
