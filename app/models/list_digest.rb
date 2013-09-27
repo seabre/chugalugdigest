@@ -21,6 +21,19 @@ class ListDigest
     end
   end
 
+  def persist
+    begin
+      REDIS.rpush "listdigests", serialize
+    rescue
+      false
+    end
+    true
+  end
+
+  def serialize
+    Marshal.dump(self)
+  end
+
   private
 
   def validate_sender(from)
