@@ -74,4 +74,32 @@ describe ListDigest do
     end
   end
 
+  describe "#serialize" do
+    it "converts the instance of ListDigest into a bytestream" do
+      expect(@list_digest.serialize).to eq Marshal.dump(@list_digest)
+    end
+  end
+
+  describe "#persist" do
+    before do
+      REDIS.flushdb
+    end
+
+    it "returns true if the object persisted successfully" do
+      expect(@list_digest.persist).to be_true
+    end
+
+    it "returns false if the object did not persist successfully due to StandardError" do
+      REDIS.stub(:rpush) { raise StandardError }
+      list_digest = ListDigest.new "derp@derpy.com", "Some Title", "A bunch of text"
+      expect(list_digest.persist).to be_false
+    end
+
+    it "returns false if the object did not persist successfully due to ConnectionError" do
+      REDIS.stub(:rpush) { raise ConnectionError }
+      list_digest = ListDigest.new "derp@derpy.com", "Some Title", "A bunch of text"
+      expect(list_digest.persist).to be_false
+    end
+  end
+
 end

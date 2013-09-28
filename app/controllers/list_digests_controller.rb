@@ -14,10 +14,7 @@ class ListDigestsController < ApplicationController
   def create
     @list_digest = ListDigest.new(params[:From], params[:Subject], params[:TextBody])
 
-    if @list_digest.submit_to_reddit(ENV['REDDIT_USERNAME'],
-                                    ENV['REDDIT_PASSWORD'],
-                                    ENV['REDDIT_SUBREDDIT'])
-
+    if @list_digest.persist
       render text: "Success", status: :created
     else
       render text: "Failed", status: :unauthorized

@@ -14,7 +14,6 @@ class ListDigest
     if validate_sender(@from)
       reddit = Snoo::Client.new
       reddit.log_in username, password
-
       reddit.submit @title, subreddit, text: to_inline(@digest_text)
     else
       false
@@ -24,10 +23,10 @@ class ListDigest
   def persist
     begin
       REDIS.rpush "listdigests", serialize
-    rescue
+      true
+    rescue StandardError, ConnectionError
       false
     end
-    true
   end
 
   def serialize
