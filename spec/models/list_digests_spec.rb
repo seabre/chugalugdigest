@@ -81,12 +81,17 @@ describe ListDigest do
   end
 
   describe "#persist" do
-    before do
+    before(:each) do
       REDIS.flushdb
     end
 
     it "returns true if the object persisted successfully" do
       expect(@list_digest.persist).to be_true
+    end
+
+    it "stores the object in REDIS_STORAGE" do
+      expect(@list_digest.persist).to be_true
+      expect(REDIS.lpop ListDigest::REDIS_STORAGE).to eq @list_digest.serialize
     end
 
     it "returns false if the object did not persist successfully due to StandardError" do

@@ -1,5 +1,7 @@
 class ListDigest
 
+  REDIS_STORAGE = "listdigests"
+
   attr_accessor :title
   attr_accessor :digest_text
   attr_accessor :from
@@ -22,7 +24,7 @@ class ListDigest
 
   def persist
     begin
-      REDIS.rpush "listdigests", serialize
+      REDIS.rpush REDIS_STORAGE, serialize
       true
     rescue StandardError, ConnectionError
       false
