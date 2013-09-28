@@ -81,7 +81,7 @@ describe ListDigest do
   end
 
   describe "#persist" do
-    before(:each) do
+    before :each  do
       REDIS.flushdb
     end
 
@@ -95,13 +95,13 @@ describe ListDigest do
     end
 
     it "returns false if the object did not persist successfully due to StandardError" do
-      REDIS.stub(:rpush) { raise StandardError }
+      REDIS.stub(:lpush) { raise StandardError }
       list_digest = ListDigest.new "derp@derpy.com", "Some Title", "A bunch of text"
       expect(list_digest.persist).to be_false
     end
 
     it "returns false if the object did not persist successfully due to ConnectionError" do
-      REDIS.stub(:rpush) { raise ConnectionError }
+      REDIS.stub(:lpush) { raise ConnectionError }
       list_digest = ListDigest.new "derp@derpy.com", "Some Title", "A bunch of text"
       expect(list_digest.persist).to be_false
     end

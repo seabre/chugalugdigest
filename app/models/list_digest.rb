@@ -1,6 +1,7 @@
 class ListDigest
 
   REDIS_STORAGE = "listdigests"
+  REDIS_STORAGE_PROCESSING = "listdigests_processing"
 
   attr_accessor :title
   attr_accessor :digest_text
@@ -14,9 +15,13 @@ class ListDigest
 
   def submit_to_reddit(username, password, subreddit)
     if validate_sender(@from)
-      reddit = Snoo::Client.new
-      reddit.log_in username, password
-      reddit.submit @title, subreddit, text: to_inline(@digest_text)
+      begin
+        reddit = Snoo::Client.new
+        reddit.log_in username, password
+        valid_response?(reddit.submit @title, subreddit, text: to_inline(@digest_text))
+      rescue
+        false
+      end
     else
       false
     end
@@ -24,7 +29,7 @@ class ListDigest
 
   def persist
     begin
-      REDIS.rpush REDIS_STORAGE, serialize
+      REDIS.lpush REDIS_STORAGE, serialize
       true
     rescue StandardError, ConnectionError
       false
@@ -35,7 +40,29 @@ class ListDigest
     Marshal.dump(self)
   end
 
+  def self.pop_and_run
+    list_digest = REDIS.rpoplpush REDIS_STORAGE, REDIS_STORAGE_PROCESSING
+    if Marshal.load(list_digest).submit_to_reddit(ENV['REDDIT_USERNAME'],
+                                                  ENV['REDDIT_PASSWORD'],
+                                                  ENV['REDDIT_SUBREDDIT'])
+      REDIS.lrem REDIS_STORAGE_PROCESSING, 0, list_digest
+    end
+  end
+
+  def self.pop_and_run_processing
+    list_digest = REDIS.rpoplpush REDIS_STORAGE_PROCESSING, REDIS_STORAGE
+    if Marshal.load(list_digest).submit_to_reddit(ENV['REDDIT_USERNAME'],
+                                                  ENV['REDDIT_PASSWORD'],
+                                                  ENV['REDDIT_SUBREDDIT'])
+      REDIS.lrem REDIS_STORAGE, 0, list_digest
+    end
+  end
+
   private
+
+  def valid_response?(request)
+    request['json']['errors'].blank?
+  end
 
   def validate_sender(from)
     "#{ENV['LISTDIGEST_WHITELIST']}".strip.split(',').include?(from)

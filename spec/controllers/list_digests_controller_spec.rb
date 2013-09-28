@@ -8,9 +8,9 @@ describe ListDigestsController do
       @json = JSON.parse(File.read("#{Rails.root}/spec/fixtures/mailing_list.json"))
     end
 
-    it "returns success if digest is posted to reddit" do
+    it "returns success if digest is successfully stored to redis" do
       @list_digest = double(ListDigest)
-      @list_digest.stub(:submit_to_reddit).and_return(true)
+      @list_digest.stub(:persist).and_return(true)
 
       ListDigest.should_receive(:new).and_return(@list_digest)
 
@@ -23,9 +23,9 @@ describe ListDigestsController do
       expect(request.remote_ip).to eq "127.0.0.1"
     end
 
-    it "returns failure if digest is not posted to reddit" do
+    it "returns failure if digest is not stored to redis" do
       @list_digest = double(ListDigest)
-      @list_digest.stub(:submit_to_reddit).and_return(false)
+      @list_digest.stub(:persist).and_return(false)
 
       ListDigest.should_receive(:new).and_return(@list_digest)
 
