@@ -42,19 +42,25 @@ class ListDigest
 
   def self.pop_and_run
     list_digest = REDIS.rpoplpush REDIS_STORAGE, REDIS_STORAGE_PROCESSING
-    if Marshal.load(list_digest).submit_to_reddit(ENV['REDDIT_USERNAME'],
-                                                  ENV['REDDIT_PASSWORD'],
-                                                  ENV['REDDIT_SUBREDDIT'])
-      REDIS.lrem REDIS_STORAGE_PROCESSING, 0, list_digest
+
+    if !list_digest.blank?
+      if Marshal.load(list_digest).submit_to_reddit(ENV['REDDIT_USERNAME'],
+                                                    ENV['REDDIT_PASSWORD'],
+                                                    ENV['REDDIT_SUBREDDIT'])
+        REDIS.lrem REDIS_STORAGE_PROCESSING, 0, list_digest
+      end
     end
   end
 
   def self.pop_and_run_processing
     list_digest = REDIS.rpoplpush REDIS_STORAGE_PROCESSING, REDIS_STORAGE
-    if Marshal.load(list_digest).submit_to_reddit(ENV['REDDIT_USERNAME'],
-                                                  ENV['REDDIT_PASSWORD'],
-                                                  ENV['REDDIT_SUBREDDIT'])
-      REDIS.lrem REDIS_STORAGE, 0, list_digest
+
+    if !list_digest.blank?
+      if Marshal.load(list_digest).submit_to_reddit(ENV['REDDIT_USERNAME'],
+                                                    ENV['REDDIT_PASSWORD'],
+                                                    ENV['REDDIT_SUBREDDIT'])
+        REDIS.lrem REDIS_STORAGE, 0, list_digest
+      end
     end
   end
 

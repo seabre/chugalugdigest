@@ -107,4 +107,74 @@ describe ListDigest do
     end
   end
 
+  describe "#pop_and_run" do
+    before :each  do
+      REDIS.flushdb
+      @list_digest.persist
+    end
+
+    it "removes ListDigest from REDIS_STORAGE on success" do
+      ListDigest.any_instance.stub(:submit_to_reddit).and_return(true)
+      ListDigest.pop_and_run
+
+      expect(REDIS.llen ListDigest::REDIS_STORAGE).to eq 0
+    end
+
+    it "removes ListDigest from REDIS_STORAGE on failure" do
+      ListDigest.any_instance.stub(:submit_to_reddit).and_return(false)
+      ListDigest.pop_and_run
+
+      expect(REDIS.llen ListDigest::REDIS_STORAGE).to eq 0
+    end
+
+    it "removes ListDigest from REDIS_STORAGE_PROCESSING on success" do
+      ListDigest.any_instance.stub(:submit_to_reddit).and_return(true)
+      ListDigest.pop_and_run
+
+      expect(REDIS.llen ListDigest::REDIS_STORAGE_PROCESSING).to eq 0
+    end
+
+    it "leaves ListDigest in REDIS_STORAGE_PROCESSING on failure" do
+      ListDigest.any_instance.stub(:submit_to_reddit).and_return(false)
+      ListDigest.pop_and_run
+
+      expect(REDIS.llen ListDigest::REDIS_STORAGE_PROCESSING).to eq 1
+    end
+  end
+
+  describe "#pop_and_run_processing" do
+    before :each  do
+      REDIS.flushdb
+      REDIS.lpush ListDigest::REDIS_STORAGE_PROCESSING, @list_digest.serialize
+    end
+
+    it "removes ListDigest from REDIS_STORAGE_PROCESSING on success" do
+      ListDigest.any_instance.stub(:submit_to_reddit).and_return(true)
+      ListDigest.pop_and_run_processing
+
+      expect(REDIS.llen ListDigest::REDIS_STORAGE_PROCESSING).to eq 0
+    end
+
+    it "removes ListDigest from REDIS_STORAGE_PROCESSING on failure" do
+      ListDigest.any_instance.stub(:submit_to_reddit).and_return(false)
+      ListDigest.pop_and_run_processing
+
+      expect(REDIS.llen ListDigest::REDIS_STORAGE_PROCESSING).to eq 0
+    end
+
+    it "removes ListDigest from REDIS_STORAGE on success" do
+      ListDigest.any_instance.stub(:submit_to_reddit).and_return(true)
+      ListDigest.pop_and_run_processing
+
+      expect(REDIS.llen ListDigest::REDIS_STORAGE).to eq 0
+    end
+
+    it "leaves ListDigest in REDIS_STORAGE on failure" do
+      ListDigest.any_instance.stub(:submit_to_reddit).and_return(false)
+      ListDigest.pop_and_run_processing
+
+      expect(REDIS.llen ListDigest::REDIS_STORAGE).to eq 1
+    end
+  end
+
 end
