@@ -98,10 +98,34 @@ describe ListDigest do
   end
 
   describe "#submit_to_reddit" do
-    it "does not submit if e-mail is not in the whitelist" do
+    it "returns false if e-mail is not in the whitelist" do
       list_digest = ListDigest.new "derp@derpy.com", "Some Title", "A bunch of text"
       expect(list_digest.submit_to_reddit("fakeusername9235","fakepass1234","fakesub123123")).to be_false
     end
+
+    it "returns false if the reddit client is not able to log in" do
+      Snoo::Client.any_instance.stub(:log_in) { raise StandardError}
+      expect(@list_digest.submit_to_reddit(ENV['REDDIT_USERNAME'], ENV['REDDIT_PASSWORD'], ENV['REDDIT_SUBREDDIT'])).to be_false
+    end
+
+    it "returns false if the submission was not successful" do
+      Snoo::Client.any_instance.stub(:log_in) {true}
+      # Actual serialized response
+      response = JSON.parse("{\"json\":{\"errors\":[[\"SUBREDDIT_NOEXIST\",\"that subreddit doesn't exist\",\"sr\"]]}}")
+
+      Snoo::Client.any_instance.stub(:submit) { response}
+      expect(@list_digest.submit_to_reddit(ENV['REDDIT_USERNAME'], ENV['REDDIT_PASSWORD'], ENV['REDDIT_SUBREDDIT'])).to be_false
+    end
+
+    it "returns true if the submission was successful" do
+      Snoo::Client.any_instance.stub(:log_in) {true}
+      # Actual serialized response
+      response = JSON.parse("{\"json\":{\"errors\":[],\"data\":{\"url\":\"http://www.reddit.com/r/seabresandbox/comments/1ncz7x/test/\",\"id\":\"1ncz7x\",\"name\":\"t3_1ncz7x\"}}}")
+
+      Snoo::Client.any_instance.stub(:submit) { response}
+      expect(@list_digest.submit_to_reddit(ENV['REDDIT_USERNAME'], ENV['REDDIT_PASSWORD'], ENV['REDDIT_SUBREDDIT'])).to be_true
+    end
+
   end
 
   describe "#to_inline" do
@@ -221,6 +245,22 @@ describe ListDigest do
   describe "#sanitize_utf8" do
     it "removes invalid utf8 sequences" do
       expect(@list_digest.send(:sanitize_utf8, "\255")).to eq ""
+    end
+  end
+
+  describe "#valid_response?" do
+    it "returns true if there are no errors" do
+      # JSON dump of successful response
+      response = JSON.parse("{\"json\":{\"errors\":[],\"data\":{\"url\":\"http://www.reddit.com/r/seabresandbox/comments/1ncz7x/test/\",\"id\":\"1ncz7x\",\"name\":\"t3_1ncz7x\"}}}")
+
+      expect(@list_digest.send(:valid_response?, response)).to be_true
+    end
+
+    it "returns false if there are errors" do
+      # JSON dump of a response with errors
+      response = JSON.parse("{\"json\":{\"errors\":[[\"SUBREDDIT_NOEXIST\",\"that subreddit doesn't exist\",\"sr\"]]}}")
+
+      expect(@list_digest.send(:valid_response?, response)).to be_false
     end
   end
 
