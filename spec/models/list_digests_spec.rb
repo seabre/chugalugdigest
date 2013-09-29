@@ -9,6 +9,13 @@ describe ListDigest do
     it "takes title and digest_text arguments and returns a ListDigest object" do
         @list_digest.should be_an_instance_of ListDigest
     end
+
+    it "sanitizes argument text if there are invalid utf8 sequences in them" do
+      list_digest = ListDigest.new "text@example.com\255", "Some Title\255", "A bunch of text\255"
+      expect(list_digest.from).to eq "text@example.com"
+      expect(list_digest.title).to eq "Some Title"
+      expect(list_digest.digest_text).to eq "A bunch of text"
+    end
   end
 
   describe "#title" do
@@ -19,6 +26,17 @@ describe ListDigest do
     it "allows setting the title after the object has been created" do
       list_digest = ListDigest.new "text@example.com", "Some Title", "A bunch of text"
       list_digest.title = "New title"
+      expect(list_digest.title).to eq "New title"
+    end
+
+    it "returns the sanitized title if there was an invalid utf8 sequence" do
+      list_digest = ListDigest.new "test@example.com", "Some Title\255", "A bunch of text"
+      expect(@list_digest.title).to eq "Some Title"
+    end
+
+    it "sets the title with sanitized text if there is an invalid utf8 sequence" do
+      list_digest = ListDigest.new "test@example.com", "Some Title", "A bunch of text"
+      list_digest.title = "New title\255"
       expect(list_digest.title).to eq "New title"
     end
   end
@@ -33,6 +51,17 @@ describe ListDigest do
       list_digest.digest_text = "New text"
       expect(list_digest.digest_text).to eq "New text"
     end
+
+    it "returns the sanitized digest text if there was an invalid utf8 sequence" do
+      list_digest = ListDigest.new "test@example.com", "Some Title", "A bunch of text\255"
+      expect(@list_digest.digest_text).to eq "A bunch of text"
+    end
+
+    it "sets the digest text with sanitized text if there is an invalid utf8 sequence" do
+      list_digest = ListDigest.new "test@example.com", "Some Title", "A bunch of text"
+      list_digest.digest_text = "New text\255"
+      expect(list_digest.digest_text).to eq "New text"
+    end
   end
 
   describe "#from" do
@@ -43,6 +72,17 @@ describe ListDigest do
     it "allows setting the from address after the object has been created" do
       list_digest = ListDigest.new "test@example.com", "Some Title", "A bunch of text"
       list_digest.from = "test@testy.com"
+      expect(list_digest.from).to eq "test@testy.com"
+    end
+
+    it "returns the sanitized from address if there was an invalid utf8 sequence" do
+      list_digest = ListDigest.new "test@example.com\255", "Some Title", "A bunch of text"
+      expect(@list_digest.from).to eq "test@example.com"
+    end
+
+    it "sets the from address with sanitized text if there is an invalid utf8 sequence" do
+      list_digest = ListDigest.new "test@example.com", "Some Title", "A bunch of text"
+      list_digest.from = "test@testy.com\255"
       expect(list_digest.from).to eq "test@testy.com"
     end
   end
@@ -140,6 +180,7 @@ describe ListDigest do
 
       expect(REDIS.llen ListDigest::REDIS_STORAGE_PROCESSING).to eq 1
     end
+
   end
 
   describe "#pop_and_run_processing" do
@@ -174,6 +215,12 @@ describe ListDigest do
       ListDigest.pop_and_run_processing
 
       expect(REDIS.llen ListDigest::REDIS_STORAGE).to eq 1
+    end
+  end
+
+  describe "#sanitize_utf8" do
+    it "removes invalid utf8 sequences" do
+      expect(@list_digest.send(:sanitize_utf8, "\255")).to eq ""
     end
   end
 
