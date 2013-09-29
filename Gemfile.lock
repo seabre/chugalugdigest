@@ -178,6 +178,10 @@ GEM
     simple_form (3.0.0.rc)
       actionpack (>= 4.0.0.rc1, < 4.1)
       activemodel (>= 4.0.0.rc1, < 4.1)
+    simplecov (0.7.1)
+      multi_json (~> 1.0)
+      simplecov-html (~> 0.7.1)
+    simplecov-html (0.7.1)
     snoo (0.1.2)
       httparty
       nokogiri
@@ -240,6 +244,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (~> 4.0.0)
   simple_form (>= 3.0.0.rc)
+  simplecov
   snoo
   sqlite3
   therubyracer
